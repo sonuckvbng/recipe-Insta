@@ -32,7 +32,7 @@ public class User {
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
-    @Column(name = "email_id", nullable = false, unique = true)
+    @Column(name = "email_id", nullable = false)
     private String emailId;
 
     @Column(name = "password", nullable = false)
