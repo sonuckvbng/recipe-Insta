@@ -12,7 +12,7 @@ public interface RecipeService {
     public Recipe findRecipeById(Long id) throws RecipeNotFoundException;
     public void deleteRecipeById(Long id) throws RecipeNotFoundException;
     public Recipe updateRecipe(Recipe recipe, Long id) throws RecipeNotFoundException;
-    public List<Recipe> findAllRecipe();
+    public List<Recipe> findAllRecipe() throws RecipeNotFoundException;
     public Recipe likeRecipe(Long recipeId, User user) throws RecipeNotFoundException;
 
 }

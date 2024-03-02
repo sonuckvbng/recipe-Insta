@@ -24,17 +24,17 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user")
-    public List<User> getUsers(){
+    public List<User> getUsers() throws UserNotFoundException {
         return userService.getUsers();
     }
 
     @PostMapping("/user")
-    public User saveUsers(@RequestBody UserRquestDto userRquestDto) throws UserAlreadyExistException {
+    public User saveUsers(@RequestBody UserRquestDto userRquestDto) throws UserAlreadyExistException, UserNotFoundException {
         return userService.saveUser(userRquestDto);
     }
 
     @GetMapping("/user/get-user-by-email")
-    public User getUserByEmailId(@RequestBody UserEmailRequestDto userEmailRequestDto){
+    public User getUserByEmailId(@RequestBody UserEmailRequestDto userEmailRequestDto) throws UserNotFoundException {
         return userService.getUserByEmailId(userEmailRequestDto.getEmailId());
     }
 

@@ -8,6 +8,7 @@ import com.sonu.recipeinsta.service.RecipeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -66,22 +67,27 @@ public class RecipeServiceImpl implements RecipeService {
      */
     @Override
     public Recipe updateRecipe(Recipe recipe, Long id) throws RecipeNotFoundException {
-        Recipe oldRecipe = findRecipeById(id);
         if (Objects.nonNull(recipe)) {
+            Recipe oldRecipe = findRecipeById(recipe.getRecipeId());
             oldRecipe.setRecipeTitle(Objects.nonNull(recipe.getRecipeTitle()) ? recipe.getRecipeTitle() : oldRecipe.getRecipeTitle());
             oldRecipe.setDescription(Objects.nonNull(recipe.getDescription()) ? recipe.getDescription() : oldRecipe.getDescription());
             oldRecipe.setRecipeImage(Objects.nonNull(recipe.getRecipeImage()) ? recipe.getRecipeImage() : oldRecipe.getRecipeImage());
             oldRecipe.setIsVegetarian(recipe.getIsVegetarian());
+            return recipeRepository.save(oldRecipe);
         }
-        return recipeRepository.save(oldRecipe);
+        throw new RecipeNotFoundException("Not ale to update as Recipe not found");
     }
 
     /**
      * @return List<Recipe>
      */
     @Override
-    public List<Recipe> findAllRecipe() {
-        return recipeRepository.findAll();
+    public List<Recipe> findAllRecipe() throws RecipeNotFoundException {
+        List<Recipe> recipeList = recipeRepository.findAll();
+        if(CollectionUtils.isEmpty(recipeList)){
+            throw new RecipeNotFoundException("No Recipe list found");
+        }
+        return  recipeList;
     }
 
     /**

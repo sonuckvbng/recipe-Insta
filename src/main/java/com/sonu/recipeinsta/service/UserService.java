@@ -11,10 +11,10 @@ import java.util.Optional;
 public interface UserService {
 
 
-    List<User> getUsers();
-    User saveUser(UserRquestDto userRquestDto) throws UserAlreadyExistException;
+    List<User> getUsers() throws UserNotFoundException;
+    User saveUser(UserRquestDto userRquestDto) throws UserAlreadyExistException, UserNotFoundException;
 
-    User getUserByEmailId(String emailId);
+    User getUserByEmailId(String emailId) throws UserNotFoundException;
 
     User getUserById(Long userId) throws UserNotFoundException;
 
