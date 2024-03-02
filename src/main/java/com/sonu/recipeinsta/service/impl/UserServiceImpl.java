@@ -1,4 +1,4 @@
-package com.sonu.recipeinsta.serviceimpl;
+package com.sonu.recipeinsta.service.impl;
 
 import com.sonu.recipeinsta.dto.requestdto.UserRquestDto;
 import com.sonu.recipeinsta.entity.User;
@@ -9,9 +9,11 @@ import com.sonu.recipeinsta.service.UserService;
 import com.sonu.recipeinsta.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,23 +26,28 @@ public class UserServiceImpl implements UserService {
      * @return List<User>
      */
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<User> getUsers() throws UserNotFoundException {
+        List<User> userList = userRepository.findAll();
+        if (CollectionUtils.isEmpty(userList)) {
+            throw new UserNotFoundException("No data found for Users");
+        }
+        return userList;
     }
 
     /**
      * used to save user details
+     *
      * @param userRquestDto
      * @return User
      */
     @Override
     public User saveUser(UserRquestDto userRquestDto) throws UserAlreadyExistException {
 
-        User isUserExist = getUserByEmailId(userRquestDto.getEmailId());
-        if (!ObjectUtils.isEmpty(isUserExist)){
+        User isUserExist = userRepository.findByEmailId(userRquestDto.getEmailId());
+        if (!ObjectUtils.isEmpty(isUserExist)) {
             throw new UserAlreadyExistException("This user already exist" + userRquestDto.getEmailId());
         }
-       return userRepository.save(User.builder().userFullName(userRquestDto.getUserFullName())
+        return userRepository.save(User.builder().userFullName(userRquestDto.getUserFullName())
                 .dob(DateFormatter.getLocalDate(userRquestDto.getDob()))
                 .emailId(userRquestDto.getEmailId())
                 .password(userRquestDto.getPassword())
@@ -52,8 +59,12 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public User getUserByEmailId(String emailId) {
-        return userRepository.findByEmailId(emailId);
+    public User getUserByEmailId(String emailId) throws UserNotFoundException {
+        User user = userRepository.findByEmailId(emailId);
+        if (Objects.nonNull(user)) {
+            return user;
+        }
+        throw new UserNotFoundException("User not found with emailId: " + emailId);
     }
 
     /**
@@ -63,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         }
         throw new UserNotFoundException("User not found for userId:" + userId);

@@ -10,8 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -37,5 +41,13 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column( insertable = false)
+    @CreatedDate
+    private ZonedDateTime createdDateTime;
+
+    @Column(insertable = false)
+    @LastModifiedDate
+    private ZonedDateTime updatedDateTime;
 
 }
