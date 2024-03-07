@@ -67,13 +67,15 @@ public class RecipeServiceImpl implements RecipeService {
      */
     @Override
     public Recipe updateRecipe(Recipe recipe, Long id) throws RecipeNotFoundException {
-        if (Objects.nonNull(recipe)) {
-            Recipe oldRecipe = findRecipeById(recipe.getRecipeId());
-            oldRecipe.setRecipeTitle(Objects.nonNull(recipe.getRecipeTitle()) ? recipe.getRecipeTitle() : oldRecipe.getRecipeTitle());
-            oldRecipe.setDescription(Objects.nonNull(recipe.getDescription()) ? recipe.getDescription() : oldRecipe.getDescription());
-            oldRecipe.setRecipeImage(Objects.nonNull(recipe.getRecipeImage()) ? recipe.getRecipeImage() : oldRecipe.getRecipeImage());
-            oldRecipe.setIsVegetarian(recipe.getIsVegetarian());
-            return recipeRepository.save(oldRecipe);
+
+            Optional<Recipe> oldRecipe = Optional.ofNullable(findRecipeById(id));
+        if (oldRecipe.isPresent()) {
+            Recipe updateRecipe = oldRecipe.get();
+            updateRecipe.setRecipeTitle(Objects.nonNull(recipe.getRecipeTitle()) ? recipe.getRecipeTitle() : updateRecipe.getRecipeTitle());
+            updateRecipe.setDescription(Objects.nonNull(recipe.getDescription()) ? recipe.getDescription() : updateRecipe.getDescription());
+            updateRecipe.setRecipeImage(Objects.nonNull(recipe.getRecipeImage()) ? recipe.getRecipeImage() : updateRecipe.getRecipeImage());
+            updateRecipe.setIsVegetarian(recipe.getIsVegetarian());
+            return recipeRepository.save(updateRecipe);
         }
         throw new RecipeNotFoundException("Not ale to update as Recipe not found");
     }
@@ -100,8 +102,9 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipe = findRecipeById(recipeId);
         if(recipe.getLikes().contains(user.getId())){
             recipe.getLikes().remove(user.getId());
+        }else {
+            recipe.getLikes().add(user.getId());
         }
-        recipe.getLikes().add(user.getId());
-        return recipe;
+        return recipeRepository.save(recipe);
     }
 }
