@@ -1,13 +1,13 @@
 package com.sonu.recipeinsta.service.impl;
 
+import com.sonu.recipeinsta.config.JwtProvider;
+import com.sonu.recipeinsta.dto.requestdto.UserRequestDto;
 
-import com.sonu.recipeinsta.Dto.requestdto.UserRequestDto;
 import com.sonu.recipeinsta.entity.User;
 import com.sonu.recipeinsta.exception.UserAlreadyExistException;
 import com.sonu.recipeinsta.exception.UserNotFoundException;
 import com.sonu.recipeinsta.repository.UserRepository;
 import com.sonu.recipeinsta.service.UserService;
-import com.sonu.recipeinsta.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +22,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtProvider jwtProvider;
 
     /**
      * @return List<User>
@@ -38,20 +41,20 @@ public class UserServiceImpl implements UserService {
     /**
      * used to save user details
      *
-     * @param userRequestDto
+     * @param userRquestDto
      * @return User
      */
     @Override
-    public User saveUser(UserRequestDto userRequestDto) throws UserAlreadyExistException {
+    public User saveUser(UserRequestDto userRquestDto) throws UserAlreadyExistException {
 
-        User isUserExist = userRepository.findByEmailId(userRequestDto.getEmailId());
+        User isUserExist = userRepository.findByEmailId(userRquestDto.getEmailId());
         if (!ObjectUtils.isEmpty(isUserExist)) {
-            throw new UserAlreadyExistException("This user already exist" + userRequestDto.getEmailId());
+            throw new UserAlreadyExistException("This user already exist" + userRquestDto.getEmailId());
         }
-        return userRepository.save(User.builder().userFullName(userRequestDto.getUserFullName())
-                .dob(DateFormatter.getLocalDate(userRequestDto.getDob()))
-                .emailId(userRequestDto.getEmailId())
-                .password(userRequestDto.getPassword())
+        return userRepository.save(User.builder().userFullName(userRquestDto.getUserFullName())
+//                .dob(DateFormatter.getLocalDate(userRquestDto.getDob()))
+                .emailId(userRquestDto.getEmailId())
+                .password(userRquestDto.getPassword())
                 .build());
     }
 
@@ -90,5 +93,24 @@ public class UserServiceImpl implements UserService {
         User userById = getUserById(userId);
         userRepository.deleteById(userId);
         return "User deleted successfully for userId:" + userId;
+    }
+
+    /**
+     * @param jwt
+     * @return User
+     * @throws Exception
+     */
+    @Override
+    public User findUserByJwt(String jwt) throws Exception {
+        String emailFromJwtToken = jwtProvider.getEmailFromJwtToken(jwt);
+        if (emailFromJwtToken==null){
+            throw new Exception("Provide valid jwt token");
+        }
+
+        User user = userRepository.findByEmailId(emailFromJwtToken);
+        if (user==null){
+            throw new Exception("User not found with email: " + emailFromJwtToken);
+        }
+        return user;
     }
 }

@@ -6,10 +6,12 @@ import com.sonu.recipeinsta.exception.RecipeNotFoundException;
 import com.sonu.recipeinsta.exception.UserNotFoundException;
 import com.sonu.recipeinsta.service.RecipeService;
 import com.sonu.recipeinsta.service.UserService;
+import jakarta.ws.rs.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 //@RequestMapping("/recipe")
@@ -21,9 +23,9 @@ public class RecipeController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/recipe/user/{userId}")
-    public Recipe createRecipe(@RequestBody Recipe recipe, @PathVariable Long userId) throws UserNotFoundException {
-        User user = userService.getUserById(userId);
+    @PostMapping("/recipe")
+    public Recipe createRecipe(@RequestBody Recipe recipe, @RequestHeader("Authorization") String jwt) throws Exception {
+        User user = userService.findUserByJwt(jwt);
         return recipeService.createRecipe(recipe, user);
     }
 
@@ -45,14 +47,16 @@ public class RecipeController {
 
     @PutMapping("/recipe/{userId}")
     public Recipe updateRecipe(@RequestBody Recipe recipe, @PathVariable Long userId) throws RecipeNotFoundException {
-        return recipeService.updateRecipe(recipe, userId);
+        if (Objects.nonNull(recipe)) {
+            return recipeService.updateRecipe(recipe, userId);
+        }
+        throw new BadRequestException("Please provide Correct data");
     }
 
-    @PutMapping("/recipe/{recipeId}/user/{userId}")
-    public Recipe likeRecipe(@PathVariable(name = "userId") Long userId, @PathVariable(name = "recipeId") Long recipeId)
-            throws RecipeNotFoundException, UserNotFoundException {
-
-        User user = userService.getUserById(userId);
+    @PutMapping("/recipe/like/{recipeId}")
+    public Recipe likeRecipe(@RequestHeader("Authorization") String jwt, @PathVariable(name = "recipeId") Long recipeId)
+            throws Exception {
+        User user = userService.findUserByJwt(jwt);
         return recipeService.likeRecipe(recipeId, user);
     }
 
