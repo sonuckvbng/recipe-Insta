@@ -1,7 +1,7 @@
 package com.sonu.recipeinsta.controller;
 
 
-import com.sonu.recipeinsta.Dto.requestdto.UserEmailRequestDto;
+import com.sonu.recipeinsta.dto.requestdto.UserEmailRequestDto;
 import com.sonu.recipeinsta.dto.requestdto.UserRequestDto;
 import com.sonu.recipeinsta.entity.User;
 import com.sonu.recipeinsta.exception.UserAlreadyExistException;

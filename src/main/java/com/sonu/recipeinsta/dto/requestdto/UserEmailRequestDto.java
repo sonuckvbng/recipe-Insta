@@ -1,4 +1,4 @@
-package com.sonu.recipeinsta.Dto.requestdto;
+package com.sonu.recipeinsta.dto.requestdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
