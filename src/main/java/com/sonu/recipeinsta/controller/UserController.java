@@ -2,7 +2,7 @@ package com.sonu.recipeinsta.controller;
 
 
 import com.sonu.recipeinsta.Dto.requestdto.UserEmailRequestDto;
-import com.sonu.recipeinsta.Dto.requestdto.UserRequestDto;
+import com.sonu.recipeinsta.dto.requestdto.UserRequestDto;
 import com.sonu.recipeinsta.entity.User;
 import com.sonu.recipeinsta.exception.UserAlreadyExistException;
 import com.sonu.recipeinsta.exception.UserNotFoundException;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -49,4 +50,8 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
+    @GetMapping("user/profile")
+    public User findUserByJwt(@RequestHeader("Authorization") String jwt) throws Exception {
+        return userService.findUserByJwt(jwt);
+    }
 }

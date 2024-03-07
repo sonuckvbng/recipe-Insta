@@ -1,5 +1,6 @@
 package com.sonu.recipeinsta.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -33,13 +35,14 @@ public class User {
     @Column(name = "user_full_name", nullable = false)
     private String userFullName;
 
-    @Column(name = "dob", nullable = false)
-    private LocalDate dob;
+//    @Column(name = "dob", nullable = false)
+//    private LocalDate dob;
 
     @Column(name = "email_id", nullable = false)
     private String emailId;
 
     @Column(name = "password", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column( insertable = false)
