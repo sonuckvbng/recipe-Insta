@@ -1,6 +1,7 @@
 package com.sonu.recipeinsta.service.impl;
 
-import com.sonu.recipeinsta.dto.requestdto.UserRquestDto;
+
+import com.sonu.recipeinsta.Dto.requestdto.UserRequestDto;
 import com.sonu.recipeinsta.entity.User;
 import com.sonu.recipeinsta.exception.UserAlreadyExistException;
 import com.sonu.recipeinsta.exception.UserNotFoundException;
@@ -37,20 +38,20 @@ public class UserServiceImpl implements UserService {
     /**
      * used to save user details
      *
-     * @param userRquestDto
+     * @param userRequestDto
      * @return User
      */
     @Override
-    public User saveUser(UserRquestDto userRquestDto) throws UserAlreadyExistException {
+    public User saveUser(UserRequestDto userRequestDto) throws UserAlreadyExistException {
 
-        User isUserExist = userRepository.findByEmailId(userRquestDto.getEmailId());
+        User isUserExist = userRepository.findByEmailId(userRequestDto.getEmailId());
         if (!ObjectUtils.isEmpty(isUserExist)) {
-            throw new UserAlreadyExistException("This user already exist" + userRquestDto.getEmailId());
+            throw new UserAlreadyExistException("This user already exist" + userRequestDto.getEmailId());
         }
-        return userRepository.save(User.builder().userFullName(userRquestDto.getUserFullName())
-                .dob(DateFormatter.getLocalDate(userRquestDto.getDob()))
-                .emailId(userRquestDto.getEmailId())
-                .password(userRquestDto.getPassword())
+        return userRepository.save(User.builder().userFullName(userRequestDto.getUserFullName())
+                .dob(DateFormatter.getLocalDate(userRequestDto.getDob()))
+                .emailId(userRequestDto.getEmailId())
+                .password(userRequestDto.getPassword())
                 .build());
     }
 

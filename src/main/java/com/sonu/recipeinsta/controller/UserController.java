@@ -1,7 +1,8 @@
 package com.sonu.recipeinsta.controller;
 
-import com.sonu.recipeinsta.dto.requestdto.UserEmailRequestDto;
-import com.sonu.recipeinsta.dto.requestdto.UserRquestDto;
+
+import com.sonu.recipeinsta.Dto.requestdto.UserEmailRequestDto;
+import com.sonu.recipeinsta.Dto.requestdto.UserRequestDto;
 import com.sonu.recipeinsta.entity.User;
 import com.sonu.recipeinsta.exception.UserAlreadyExistException;
 import com.sonu.recipeinsta.exception.UserNotFoundException;
@@ -29,8 +30,8 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public User saveUsers(@RequestBody UserRquestDto userRquestDto) throws UserAlreadyExistException, UserNotFoundException {
-        return userService.saveUser(userRquestDto);
+    public User saveUsers(@RequestBody UserRequestDto userRequestDto) throws UserAlreadyExistException, UserNotFoundException {
+        return userService.saveUser(userRequestDto);
     }
 
     @GetMapping("/user/get-user-by-email")
